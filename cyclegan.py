@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.layers as tfl
-from scipy.misc import imresize
+from skimage.transform import resize
 
 
 def imcrop_tosquare(img):
@@ -575,7 +575,7 @@ def get_images(path1, path2, img_size=256):
     files2 = [os.path.join(path2, f) for f in os.listdir(path2)]
     imgs1 = []
     for f in files1:
-        img = imresize(
+        img = resize(
             imcrop_tosquare(plt.imread(f)), (img_size, img_size))
         if img.ndim == 3:
             imgs1.append(img[..., :3])
@@ -585,7 +585,7 @@ def get_images(path1, path2, img_size=256):
     imgs1 = np.array(imgs1) / 127.5 - 1.0
     imgs2 = []
     for f in files2:
-        img = imresize(
+        img = resize(
             imcrop_tosquare(plt.imread(f)), (img_size, img_size))
         if img.ndim == 3:
             imgs2.append(img[..., :3])
@@ -649,10 +649,10 @@ def batch_generator_random_crop(X, Y, min_size=256, max_size=512,
         max_c = c - size
         this_r = np.random.randint(0, max_r)
         this_c = np.random.randint(0, max_c)
-        img = imresize(X[this_r:this_r + size, this_c:this_c + size, :],
+        img = resize(X[this_r:this_r + size, this_c:this_c + size, :],
                        (min_size, min_size))
         Xs.append(img)
-        img = imresize(Y[this_r:this_r + size, this_c:this_c + size, :],
+        img = resize(Y[this_r:this_r + size, this_c:this_c + size, :],
                        (min_size, min_size))
         Ys.append(img)
     imgs1, imgs2 = np.array(Xs) / 127.5 - 1.0, np.array(Ys) / 127.5 - 1.0
